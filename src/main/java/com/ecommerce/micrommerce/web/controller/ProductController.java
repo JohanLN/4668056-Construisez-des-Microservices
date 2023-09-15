@@ -47,18 +47,24 @@ public class ProductController {
         return produit;
     }
 
-    @GetMapping(value = "test/produits/{prixLimit}")
+    @GetMapping(value = "/test/produits/{prixLimit}")
     public List<Product> testeDeRequetes(@PathVariable int prixLimit) {
         return productDao.findByPrixGreaterThan(prixLimit);
     }
 
-    @GetMapping(value = "AdminProduits/{id}")
+    @ApiOperation(value = "Récupère un produit grâce à son ID à condition que celui-ci soit en stock et calcul la marge faite sur le produit")
+    @GetMapping(value = "/AdminProduits/{id}")
     public int calculerMargeProduit(@PathVariable int id) {
         Product product = productDao.findById(id);
 
         if (product==null) throw new ProduitIntrouvableException("Le produit avec l'id " + id + " est INTROUVABLE. Écran Bleu si je pouvais.");
 
         return product.getPrix() - product.getPrixAchat();
+    }
+
+    @GetMapping(value = "/TriProduits")
+    public List<Product> trierProduitsParOrdreAlphabetique() {
+        return productDao.findAllByOrderByNom();
     }
 
     @PostMapping(value = "/Produits")
